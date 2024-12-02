@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function refreshSession() {
+            $.ajax({
+                url: '{% url "refresh_session" %}',
+                method: 'GET',
+                success: function(data) {
+                    console.log('Session refreshed');
+                }
+            });
+        }
+
+        // Refresh session every 5 minutes
+        setInterval(refreshSession, 5 * 60 * 1000);
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+<body class="bg-white">
+    <nav class="bg-white p-4 text-black">
+        <div class="container mx-auto flex justify-between items-center h-20" >
+            <div class="flex justify-between items-center ">
+                
+                <img src="../../../product/woman.png" alt="Logo" class="w-10 h-10" >
+                <a href="{% url 'storefront' %}" class="text-2xl font-bold mr-4 px-6 " style="font-family:'poppins';">Fashion Store</a>
+            </div>
+            <div class="pr-16 flex justify-between">
+                <div class="items-center flex mt-1">
+
+                    <a href="{% url 'storefront' %}" class="mr-4 hover:underline transition duration-300 ease-in-out">Store</a>
+                    <a href="{% url 'dashboard' %}" class="mr-4 hover:underline transition duration-300 ease-in-out">Dashboard</a>
+                    <a href="{% url 'product_list' %}" class="mr-4 hover:underline transition duration-300 ease-in-out">Products</a>
+                    <a href="{% url 'sale_list' %}" class="mr-4 hover:underline transition duration-300 ease-in-out">Sales</a>
+                    <a href="{% url 'preferences:customer_preference' %}" class="mr-4 hover:underline transition duration-300 ease-in-out">Preferences</a>
+                    <a href="{% url 'view_cart' %}" class="mr-4 hover:underline transition duration-300 ease-in-out">Cart (<span id="cart-count">0</span>)</a>
+                    {% if user.is_authenticated %}
+                </div>
+                <div class="bg-white border border-black rounded-full w-24 flex justify-center items-center h-10 ml-5 text-black hover:bg-black hover:text-white transition duration-300 ease-in-out">
+                    <img src="../../../product/user.png" alt="user" width="20" height="20">
+                    <a href="{% url 'logout' %}" >
+                        Logout
+                    </a>
+                </div>
+                
+                {% else %}
+                <div class="bg-white border border-black rounded-full w-24 flex justify-center items-center h-10 ml-5 text-black hover:bg-black hover:text-white transition duration-300 ease-in-out">
+                    <img src="../../../product/user.png" alt="user" width="20" height="20">
+                    <a href="{% url 'login' %}">Login</a>
+                    </div>
+
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <div class="container mx-auto mt-8">
+        {% csrf_token %}
+        {% block content %}{% endblock %}
+    </div>
+   
+</body>
+</html>

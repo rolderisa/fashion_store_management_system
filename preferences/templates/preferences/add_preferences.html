@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-6">Add Customer Preferences</h1>
+    
+    <form method="post" id="preference-form" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        {% csrf_token %}
+        
+        <!-- Favorite category -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="favorite_category">
+                Favorite Category
+            </label>
+            <select name="favorite_category" id="favorite_category" class="border-2 w-full p-2 rounded">
+                <option value="U - Accessories">U - Accessories</option>
+                <option value="U - Clothing">U - Clothing</option>
+                <option value="U - Shoes">U - Shoes</option>
+                <!-- Add other categories as needed -->
+            </select>
+        </div>
+        
+        <!-- Size -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="size">
+                Size
+            </label>
+            <select name="size" id="size" class="border-2 w-full p-2 rounded">
+                <option value="32">32</option>
+                <option value="34">34</option>
+                <option value="36">36</option>
+                <!-- Add other sizes as needed -->
+            </select>
+        </div>
+        
+        <!-- Color -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="color">
+                Color
+            </label>
+            <input type="text" name="color" id="color" class="border-2 w-full p-2 rounded" placeholder="Enter your preferred color">
+        </div>
+        
+        <!-- Receive notifications -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="receive_notifications">
+                Receive Notifications
+            </label>
+            <input type="checkbox" name="receive_notifications" id="receive_notifications" class="rounded">
+        </div>
+
+        <!-- Preferred contact method -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="contact_method">
+                Preferred Contact Method
+            </label>
+            <select name="contact_method" id="contact_method" class="border-2 w-full p-2 rounded">
+                <option value="SMS">SMS</option>
+                <option value="Email">Email</option>
+                <!-- Add other methods if needed -->
+            </select>
+        </div>
+        
+        <div class="flex items-center justify-between">
+            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Save Preferences
+            </button>
+            <a href="{% url 'preferences:view_preference' %}" class="text-green-500 hover:text-green-800">
+                View Preferences
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('preference-form');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();  // Prevent the default form submission
+            
+            const formData = new FormData(form);
+            
+            fetch('{% url "preferences:add_preference" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    // Include content type for FormData (this should be handled automatically)
+                    'Accept': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                    window.location.href = '{% url "preferences:view_preference" %}'; // Redirect on success
+                } else {
+                    alert('Error: ' + (data.errors ? Object.values(data.errors).join(", ") : 'Please check your input'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        });
+    });
+</script>
+{% endblock %}

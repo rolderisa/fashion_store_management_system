@@ -1,0 +1,420 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-white">
+
+    <section class="py-8 mb-8">
+        <div class="container mx-auto px-4">
+            <div class="max-w-5xl mx-auto bg-gray-100 rounded-lg overflow-hidden">
+                <div class="relative" style="height: 500px;">
+                    <img src="../../../product/Kendall-Jenner-FWRD-Fall-24-13.webp" alt="Simple is More" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-center px-6 hero-text">
+                        <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Simple is More</h1>
+                        <p class="text-sm md:text-base text-white mb-1">LIMITED EDITIONS STYLES</p>
+                        <p class="text-sm md:text-base text-white">DESIGNED TO STAND OUT</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   
+    <section class="py-8 px-4">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-4 relative">
+                <h2 class="text-2xl font-semibold">Shop by Category</h2>
+                <a href="{% url 'storefront' %}" class="text-teal-500 hover:underline">See All</a>
+            </div>
+            <div class="flex justify-between overflow-x-auto mr-4 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 absolute px-40">
+                <a href="{% url 'storefront' %}" class="flex flex-col items-center mr-4 ml-5 category-item">
+                    <div class=" bg-white border border-black hover:border-white p-4 rounded-lg flex items-center justify-center brand-item fade-in">  <span class="text-sm">All Products</span>  </div>
+                   
+                </a>
+                {% for category in categories %}
+                <a href="{% url 'storefront' %}?category={{ category.id }}" class="flex flex-col items-center mr-4 category-item">
+                    <div class="bg-white border hover:border-white border-black p-4 rounded-lg flex items-center justify-center brand-item fade-in">
+                        <span class="text-sm">{{category.name}}</span>
+                        
+                    </div>
+                   
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="py-8 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-2xl font-semibold mb-4">Our Products</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {% for product in products %}
+                <div class="bg-white p-4 rounded-lg shadow product-card fade-in">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover mb-4 rounded">
+                    {% else %}
+                    <div class="w-full h-48 bg-gray-200 mb-4 rounded"></div>
+                    {% endif %}
+                    <h3 class="text-lg font-semibold mb-2">{{ product.name }}</h3>
+                    <p class="text-gray-600 mb-2 text-sm">{{ product.description|truncatewords:20 }}</p>
+                    <p class="font-bold text-lg mb-2 text-teal-500">${{ product.price }}</p>
+                    <button class="w-1/2 bg-green-600 text-white px-4 py-2 rounded hover:bg-teal-600 add-to-cart"  onclick="addToCart({{product.id}})">
+                        Add to Cart
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Deals -->
+    <section class="py-8 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-2xl font-semibold mb-4">Featured Deals</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-green-600 text-white p-6 rounded-lg featured-deal slide-in">
+                    <h3 class="text-xl font-bold mb-2">Indulge in exclusive deals</h3>
+                    <p class="mb-4">Shop now and enjoy up to 50% off select fashion finds</p>
+                    <a href="#" class="bg-white text-blue-500 px-4 py-2 rounded inline-block hover:bg-gray-100">Shop Now</a>
+                </div>
+                <div class="bg-black text-white p-6 rounded-lg featured-deal slide-in">
+                    <h3 class="text-xl font-bold mb-2">Welcome offer just for you</h3>
+                    <p class="mb-4">Get 20% off your first purchase</p>
+                    <a href="#" class="bg-white text-black px-4 py-2 rounded inline-block hover:bg-gray-100">Get Discount</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shop by Brands -->
+    <section class="py-8 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-2xl font-semibold mb-4">Shop by Brands</h2>
+            <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-center brand-item fade-in">
+                    <span class="font-semibold">ZARA</span>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-center brand-item fade-in">
+                    <span class="font-semibold">DIOR</span>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-center brand-item fade-in">
+                    <span class="font-semibold">GUCCI</span>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-center brand-item fade-in">
+                    <span class="font-semibold">LV</span>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-center brand-item fade-in">
+                    <span class="font-semibold">OMEGA</span>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-center brand-item fade-in">
+                    <span class="font-semibold">FILA</span>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-center brand-item fade-in">
+                    <span class="font-semibold">PRADA</span>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-center brand-item fade-in">
+                    <span class="font-semibold">POLO</span>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-center brand-item fade-in">
+                    <span class="font-semibold">Adidas</span>
+                </div>
+                
+            </div>
+        </div>
+    </section> 
+   
+
+    <!-- Recent Posts -->
+    <section class="py-8 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-2xl font-semibold mb-4">Recent Posts</h2>
+            <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+               
+                <div class="relative h-64 w-60 rounded-lg overflow-hidden recent-post scale-on-hover fade-in">
+                    <img src="../../../product/f1.webp" alt="{{ post.title }}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-end p-4">
+                        <span class="text-white text-sm mb-2">Style</span>
+                        <h3 class="text-white text-xl font-semibold">
+                            Modern fashion for the contemporary woman</h3>
+                    </div>
+                </div>
+                <div class="relative h-64 w-60 rounded-lg overflow-hidden recent-post scale-on-hover fade-in">
+                    <img src="../../../product/f2.webp" alt="{{ post.title }}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-end p-4">
+                        <span class="text-white text-sm mb-2">Style</span>
+                        <h3 class="text-white text-xl font-semibold">
+                            Modern fashion for the contemporary man</h3>
+                    </div>
+                </div>
+                
+                <div class="relative h-64 w-60 rounded-lg overflow-hidden recent-post scale-on-hover fade-in">
+                    <img src="../../../product/f3.webp" alt="{{ post.title }}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-end p-4">
+                        <span class="text-white text-sm mb-2">Style</span>
+                        <h3 class="text-white text-xl font-semibold">
+                            Modern fashion for the contemporary woman</h3>
+                    </div>
+                </div>
+                <div class="relative h-64 w-60 rounded-lg overflow-hidden recent-post scale-on-hover fade-in">
+                    <img src="../../../product/f5.webp" alt="{{ post.title }}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-end p-4">
+                        <span class="text-white text-sm mb-2">Style</span>
+                        <h3 class="text-white text-xl font-semibold">
+                            Modern fashion for the contemporary woman</h3>
+                    </div>
+                </div>
+                <div class="relative h-64 w-60 rounded-lg overflow-hidden recent-post scale-on-hover fade-in">
+                    <img src="../../../product/f4.webp" alt="{{ post.title }}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-end p-4">
+                        <span class="text-white text-sm mb-2">Style</span>
+                        <h3 class="text-white text-xl font-semibold">
+                            Modern fashion for the contemporary man</h3>
+                    </div>
+                </div>
+                <div class="relative h-64 w-60 rounded-lg overflow-hidden recent-post scale-on-hover fade-in">
+                    <img src="../../../product/f6.webp" alt="{{ post.title }}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-end p-4">
+                        <span class="text-white text-sm mb-2">Style</span>
+                        <h3 class="text-white text-xl font-semibold">
+                            Modern fashion for the contemporary woman</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 py-8 px-4">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="font-semibold mb-2">Help</h3>
+                    <ul class="space-y-1">
+                        <li><a href="#" class="hover:text-teal-500">FAQ</a></li>
+                        <li><a href="#" class="hover:text-teal-500">Live Chat</a></li>
+                        <li><a href="#" class="hover:text-teal-500">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">Account</h3>
+                    <ul class="space-y-1">
+                        <li><a href="#" class="hover:text-teal-500">My Account</a></li>
+                        <li><a href="#" class="hover:text-teal-500">Check Order</a></li>
+                        <li><a href="#" class="hover:text-teal-500">My Wishlist</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">Legal</h3>
+                    <ul class="space-y-1">
+                        <li><a href="#" class="hover:text-teal-500">Terms</a></li>
+                        <li><a href="#" class="hover:text-teal-500">Privacy</a></li>
+                        <li><a href="#" class="hover:text-teal-500">Cookie Settings</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">Connect with Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-teal-500">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-teal-500">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-teal-500">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center border-t pt-4">
+                <div class="text-sm">&copy; 2024 Fashion Store. All rights reserved.</div>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="bg-black text-white px-4 py-2 rounded text-sm">Download on App Store</a>
+                    <a href="#" class="bg-black text-white px-4 py-2 rounded text-sm">Get it on Google Play</a>
+                </div>
+            </div>
+        
+        </div>
+    </footer>
+</div>
+
+<style>
+.fade-in {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.fade-in.visible {
+    opacity: 1;
+}
+
+.slide-in {
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+.slide-in.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.scale-on-hover {
+    transition: transform 0.3s ease-in-out;
+}
+
+.scale-on-hover:hover {
+    transform: scale(1.05);
+}
+
+.hero-text {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.hero-text.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.category-item {
+    transition: transform 0.3s ease-in-out;
+}
+
+.category-item:hover {
+    transform: translateY(-5px);
+}
+
+.product-card {
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.product-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-5px);
+}
+
+.add-to-cart {
+    transition: background-color 0.3s ease-in-out;
+}
+
+.featured-deal {
+    transition: transform 0.3s ease-in-out;
+}
+
+.featured-deal:hover {
+    transform: translateY(-5px);
+}
+
+.brand-item {
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.brand-item:hover {
+    background-color: #f3f4f6;
+    transform: scale(1.05);
+}
+
+.recent-post {
+    transition: transform 0.3s ease-in-out;
+}
+
+.recent-post:hover {
+    transform: scale(1.03);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+   
+    function updateCartCount(count) {
+        const cartCountElement = document.getElementById('cart-count');
+        if (cartCountElement) {
+            cartCountElement.textContent = count;
+        }
+    }
+
+    // Animation functions
+    function animateOnScroll() {
+        const elements = document.querySelectorAll('.fade-in, .slide-in');
+        const windowHeight = window.innerHeight;
+
+        elements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            if (elementTop < windowHeight * 0.9) {
+                element.classList.add('visible');
+            }
+        });
+    }
+
+    function setupAnimations() {
+        // Hero section
+        const heroText = document.querySelector('.hero-text');
+        if (heroText) {
+            heroText.classList.add('visible');
+        }
+
+        // Trigger initial animation
+        animateOnScroll();
+
+        // Add scroll event listener
+        window.addEventListener('scroll', animateOnScroll);
+    }
+
+    // Call the setup function
+    setupAnimations();
+});
+
+function addToCart(productId) {
+    fetch(`/add-to-cart/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ product_id: productId })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Product added to cart successfully!');
+            // Update cart count in UI if needed
+            // document.getElementById('cart-count').textContent = data.cart_count;
+        } else {
+            alert('Failed to add product to cart: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while adding the product to the cart.');
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script> 
+
+{% endblock %}

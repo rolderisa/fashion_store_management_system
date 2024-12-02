@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto p-4">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Your Preferences</h1>
+        <a href="{% url 'preferences:customer_preference' %}" class="bg-green-700 hover:bg-green-500 text-white font-bold py-2 px-4 rounded">
+            Edit Preferences
+        </a>
+    </div>
+    
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Favorite Category</label>
+            <p class="text-gray-700">{{ preference.favorite_category|default:"Not set" }}</p>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Size</label>
+            <p class="text-gray-700">{{ preference.size|default:"Not set" }}</p>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Color</label>
+            <p class="text-gray-700">{{ preference.color|default:"Not set" }}</p>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Receive Notifications</label>
+            <p class="text-gray-700">{{ preference.receive_notifications|yesno:"Yes,No" }}</p>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Preferred Contact Method</label>
+            <p class="text-gray-700">{{ preference.get_preferred_contact_method_display }}</p>
+        </div>
+    </div>
+    <a href="{% url 'preferences:add_preference' %}" class="bg-green-700 hover:bg-green-500 text-white font-bold py-2 px-4 rounded">
+        Add Preferences
+    </a>
+</div>
+{% endblock %}

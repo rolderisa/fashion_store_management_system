@@ -1,0 +1,139 @@
+{% extends 'sales/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-3xl font-bold" style="font-family: Poppins;">Sales List</h1>
+    <a href="{% url 'add_sale' %}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Add Sale</a>
+</div>
+
+<table class="min-w-full bg-white rounded-lg shadow-md">
+    <thead>
+        <tr class="bg-gray-200 text-gray-600 text-left uppercase text-sm leading-normal">
+            <th class="py-3 px-6">Product</th>
+            <th class="py-3 px-6">Quantity</th>
+            <th class="py-3 px-6">Total Price</th>
+            <th class="py-3 px-6">Date</th>
+            <th class="py-3 px-6">Actions</th>
+        </tr>
+    </thead>
+    <tbody class="text-gray-600 text-sm font-light">
+        {% if sales %}
+            {% for sale in sales %}
+            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                <td class="py-3 px-6">{{ sale.product.name }}</td>
+                <td class="py-3 px-6">{{ sale.quantity }}</td>
+                <td class="py-3 px-6">${{ sale.total_price }}</td>
+                <td class="py-3 px-6">{{ sale.date|date:"M d, Y H:i" }}</td>
+                <td class="py-3 px-6">
+                    <button class="text-blue-500 hover:underline view-sale" data-sale-id="{{ sale.id }}">View</button>
+                    <a href="{% url 'edit_sale' sale.id %}" class="text-green-500 hover:underline ml-2">Edit</a>
+                    <button class="text-red-500 hover:underline ml-2 delete-sale" data-sale-id="{{ sale.id }}">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="5" class="py-3 px-6 text-center text-gray-500">
+                No sales available. Click "Add Sale" to create one.
+            </td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+<!-- View Sale Modal -->
+<div id="viewSaleModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Sale Details</h3>
+            <div class="mt-2 px-7 py-3">
+                <p id="modalProduct" class="text-sm text-gray-500"></p>
+                <p id="modalQuantity" class="text-sm text-gray-500"></p>
+                <p id="modalTotalPrice" class="text-sm text-gray-500"></p>
+                <p id="modalDate" class="text-sm text-gray-500"></p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="closeModal" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const viewButtons = document.querySelectorAll('.view-sale');
+    const deleteButtons = document.querySelectorAll('.delete-sale');
+    const modal = document.getElementById('viewSaleModal');
+    const closeModal = document.getElementById('closeModal');
+
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const saleId = this.getAttribute('data-sale-id');
+            fetch(`/sales/view/${saleId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('modalProduct').textContent = `Product: ${data.product.name}`;
+                    document.getElementById('modalQuantity').textContent = `Quantity: ${data.quantity}`;
+                    document.getElementById('modalTotalPrice').textContent = `Total Price: $${data.total_price}`;
+                    document.getElementById('modalDate').textContent = `Date: ${new Date(data.date).toLocaleString()}`;
+                    modal.classList.remove('hidden');
+                });
+        });
+    });
+
+    closeModal.addEventListener('click', function() {
+        modal.classList.add('hidden');
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
+
+    // Delete functionality
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const saleId = this.getAttribute('data-sale-id');
+            if (confirm('Are you sure you want to delete this sale?')) {
+                fetch(`/sales/delete/${saleId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the sale.');
+                });
+            }
+        });
+    });
+
+    // Function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endblock %}
