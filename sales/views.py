@@ -31,7 +31,7 @@ def add_sale(request):
             sale.user = request.user
             sale.save()
             
-            # Update product stock
+            
             product = sale.product
             product.stock -= sale.quantity
             product.save()
@@ -46,7 +46,7 @@ def add_sale(request):
 def delete_sale(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id, user=request.user)
     with transaction.atomic():
-        # Restore product stock
+      
         product = sale.product
         product.stock += sale.quantity
         product.save()
@@ -74,15 +74,15 @@ def edit_sale(request, sale_id):
         form = SaleForm(request.POST, instance=sale)
         if form.is_valid():
             with transaction.atomic():
-                # Restore old product stock
+              
                 old_product = sale.product
                 old_product.stock += sale.quantity
                 old_product.save()
                 
-                # Update sale
+                
                 updated_sale = form.save()
                 
-                # Update new product stock
+               
                 new_product = updated_sale.product
                 new_product.stock -= updated_sale.quantity
                 new_product.save()

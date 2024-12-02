@@ -77,7 +77,7 @@ def edit_product(request, product_id):
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            return redirect('dashboard')  # or wherever you want to redirect after editing
+            return redirect('dashboard') 
     else:
         form = ProductForm(instance=product)
     return render(request, 'products/edit_product.html', {'form': form, 'product': product})

@@ -20,16 +20,16 @@ class ProductForm(forms.ModelForm):
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].empty_label = "Select a category"
 
-    # Mark the 'low_stock_threshold' as not required
+    
     def clean(self):
         cleaned_data = super().clean()
         low_stock_threshold = cleaned_data.get('low_stock_threshold')
         
-        # Ensure low_stock_threshold is optional by default
-        if low_stock_threshold is None:
-            cleaned_data['low_stock_threshold'] = 0  # or any other default value
         
-        # Validation for category field
+        if low_stock_threshold is None:
+            cleaned_data['low_stock_threshold'] = 0  
+        
+      
         if not cleaned_data.get('category'):
             self.add_error('category', 'Please select a category')
 

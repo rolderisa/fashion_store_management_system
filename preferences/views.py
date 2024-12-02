@@ -55,7 +55,7 @@ def update_preference(request):
             form.save()
             return JsonResponse({'status': 'success', 'message': 'Preferences updated successfully'})
         else:
-            # Return errors if form is invalid
+           
             return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
     except Exception as e:
         logger.error(f"Error in update_preference view: {str(e)}")
@@ -66,10 +66,9 @@ def add_preference(request):
         form = CustomerPreferenceForm(request.POST)
         if form.is_valid():
             preference = form.save(commit=False)
-            preference.user = request.user  # Assuming the user is logged in
+            preference.user = request.user  
             preference.save()
 
-            # Check for AJAX request using the correct header
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'status': 'success',
@@ -78,7 +77,7 @@ def add_preference(request):
 
             return redirect('preferences:view_preference')
         else:
-            # Return errors if the form is not valid
+            
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'status': 'error',

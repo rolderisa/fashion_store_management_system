@@ -20,7 +20,7 @@ class add(forms.ModelForm):
         model = CustomerPreference
         fields = ['favorite_category', 'size', 'color', 'receive_notifications', 'preferred_contact_method']
 
-    # You can add custom validation or widgets here if needed
+   
     favorite_category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label="Select Category")
     size = forms.ChoiceField(choices=[('32', '32'), ('34', '34'), ('36', '36')], required=False)
     color = forms.CharField(max_length=50, required=False)
